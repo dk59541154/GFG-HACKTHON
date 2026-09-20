@@ -57,6 +57,23 @@ function startPythonBackend() {
 // Start Flask process
 startPythonBackend();
 
+// Active health check: polls Flask until it responds
+function checkHealth() {
+  const req = http.get(`http://127.0.0.1:${PYTHON_PORT}/api/auth/status`, (res) => {
+    if (res.statusCode === 200) {
+      isPythonReady = true;
+    }
+  });
+  req.on("error", () => {
+    // Flask not ready yet, continue polling
+  });
+}
+const healthInterval = setInterval(() => {
+  if (!isPythonReady) {
+    checkHealth();
+  }
+}, 1000);
+
 // Proxy middleware: streams raw request to Flask and streams response back
 app.use((req, res) => {
   const options: http.RequestOptions = {
@@ -66,12 +83,21 @@ app.use((req, res) => {
     method: req.method,
     headers: {
       ...req.headers,
-      host: `127.0.0.1:${PYTHON_PORT}`
+      host: req.headers.host || `127.0.0.1:${PORT}`,
+      "x-forwarded-host": req.headers.host || `127.0.0.1:${PORT}`,
+      "x-forwarded-proto": (req.headers["x-forwarded-proto"] as string) || "http"
     }
   };
 
   const proxyReq = http.request(options, (proxyRes) => {
-    res.writeHead(proxyRes.statusCode || 200, proxyRes.headers);
+    // Rewrite internal redirection location headers if any
+    const responseHeaders = { ...proxyRes.headers };
+    if (responseHeaders.location && typeof responseHeaders.location === "string") {
+      responseHeaders.location = responseHeaders.location.replace(/^https?:\/\/127\.0\.0\.1:5000/, "");
+    }
+    
+    isPythonReady = true;
+    res.writeHead(proxyRes.statusCode || 200, responseHeaders);
     proxyRes.pipe(res, { end: true });
   });
 
@@ -116,11 +142,13 @@ const server = app.listen(PORT, "0.0.0.0", () => {
 
 // Graceful shutdown
 process.on("SIGTERM", () => {
+  clearInterval(healthInterval);
   if (pythonProcess) pythonProcess.kill("SIGTERM");
   server.close(() => process.exit(0));
 });
 
 process.on("SIGINT", () => {
+  clearInterval(healthInterval);
   if (pythonProcess) pythonProcess.kill("SIGINT");
   server.close(() => process.exit(0));
 });

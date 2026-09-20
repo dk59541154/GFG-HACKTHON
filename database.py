@@ -12,9 +12,10 @@ DATABASE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "civic_
 
 
 def get_db_connection():
-    """Returns a sqlite3 connection with Row factory for dict-like access."""
-    conn = sqlite3.connect(DATABASE_FILE)
+    """Returns a sqlite3 connection with Row factory for dict-like access and WAL mode for concurrency."""
+    conn = sqlite3.connect(DATABASE_FILE, timeout=15.0)
     conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA journal_mode=WAL;")
     return conn
 
 

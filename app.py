@@ -24,6 +24,8 @@ app = Flask(
 
 # Secret key for session authentication
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "civiceye-secret-key-prod-2026-audit")
+app.url_map.strict_slashes = False
+app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16MB upload limit
 
 # Configuration for image uploads
 UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static", "uploads")
@@ -534,6 +536,32 @@ def api_clear_demo():
     """Clears all records for clean benchmark testing."""
     database.clear_all_issues()
     return jsonify({"success": True, "message": "All issues cleared."})
+
+
+# ---------------------------------------------------------
+# ERROR HANDLERS
+# ---------------------------------------------------------
+
+@app.errorhandler(413)
+def request_entity_too_large(error):
+    """Handles oversized uploads gracefully."""
+    return jsonify({"error": "Uploaded file is too large. Maximum size is 16MB."}), 413
+
+
+@app.errorhandler(404)
+def not_found(error):
+    """Graceful 404 handler for API routes and pages."""
+    if request.path.startswith("/api/"):
+        return jsonify({"error": "Endpoint not found"}), 404
+    return render_template("index.html", current_page="home"), 404
+
+
+@app.errorhandler(500)
+def internal_error(error):
+    """Graceful 500 handler."""
+    if request.path.startswith("/api/"):
+        return jsonify({"error": "Internal server error"}), 500
+    return render_template("index.html", current_page="home"), 500
 
 
 if __name__ == "__main__":

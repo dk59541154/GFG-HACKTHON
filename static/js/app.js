@@ -86,7 +86,14 @@ window.CivicEye = {
   formatDate: function (dateStr) {
     if (!dateStr) return "N/A";
     try {
-      const d = new Date(dateStr.replace(" ", "T") + "Z");
+      let isoStr = String(dateStr).trim();
+      if (!isoStr.includes("T")) {
+        isoStr = isoStr.replace(" ", "T");
+      }
+      if (!isoStr.endsWith("Z") && !isoStr.includes("+") && !isoStr.includes("-", 10)) {
+        isoStr += "Z";
+      }
+      const d = new Date(isoStr);
       return isNaN(d.getTime()) ? dateStr : d.toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
