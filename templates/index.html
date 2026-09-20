@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}CIVICEYE AI - Smarter Roads. Safer Cities.{% endblock %}
+
+{% block content %}
+<div class="app-container">
+
+  <!-- Hero Section -->
+  <section style="background-color: #ffffff; border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 3.5rem 2.5rem; margin-bottom: 2.5rem; box-shadow: var(--shadow-sm); text-align: center;">
+    <div style="display:inline-flex; align-items:center; gap:8px; padding:4px 14px; background-color:var(--accent-blue-light); border:1px solid var(--accent-blue-border); border-radius:var(--radius-full); font-size:0.8rem; font-weight:700; color:var(--accent-blue); margin-bottom:1.25rem;">
+      <span>MUNICIPAL INFRASTRUCTURE AUDITOR</span>
+    </div>
+
+    <h1 style="font-size: 2.75rem; color: var(--text-primary); margin-bottom: 1rem; letter-spacing: -0.02em;">
+      Smarter Roads. Safer Cities.
+    </h1>
+
+    <p style="font-size: 1.15rem; color: var(--text-secondary); max-width: 720px; margin: 0 auto 2rem auto; line-height: 1.6;">
+      AI-powered infrastructure monitoring that detects, locates, verifies, prioritizes and tracks civic issues.
+    </p>
+
+    <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+      <a href="/report" class="btn btn-primary btn-lg">
+        Report an Issue
+      </a>
+      <a href="/dashboard" class="btn btn-outline btn-lg">
+        View Dashboard
+      </a>
+    </div>
+
+    <!-- Tagline Bar -->
+    <div style="margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-light); display:flex; justify-content:center; align-items:center; gap: 12px; font-size: 0.85rem; font-weight: 700; color: var(--text-muted); flex-wrap:wrap;">
+      <span>Detect</span>
+      <span>→</span>
+      <span>Locate</span>
+      <span>→</span>
+      <span>Verify</span>
+      <span>→</span>
+      <span>Prioritize</span>
+      <span>→</span>
+      <span>Track</span>
+    </div>
+  </section>
+
+  <!-- Feature Cards Section -->
+  <section style="margin-bottom: 3rem;">
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <h2 style="margin-bottom: 0.5rem;">Core Municipal Capabilities</h2>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">Engineered for city engineers, public works inspectors, and engaged citizens.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem;">
+      
+      <!-- Card 1: AI Defect Detection -->
+      <div class="card" style="display: flex; flex-direction: column;">
+        <div style="width: 44px; height: 44px; background-color: var(--accent-blue-light); border: 1px solid var(--accent-blue-border); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; color: var(--accent-blue); margin-bottom: 1rem;">
+          🤖
+        </div>
+        <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">AI Defect Detection</h3>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">
+          Automated computer vision pipelines to analyze surface distress, potholes, alligator cracking, and damaged traffic assets.
+        </p>
+      </div>
+
+      <!-- Card 2: GPS Location -->
+      <div class="card" style="display: flex; flex-direction: column;">
+        <div style="width: 44px; height: 44px; background-color: var(--accent-blue-light); border: 1px solid var(--accent-blue-border); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; color: var(--accent-blue); margin-bottom: 1rem;">
+          📍
+        </div>
+        <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">GPS Location</h3>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">
+          High-accuracy browser geolocation captures exact coordinates to plot defect clusters across interactive urban maps.
+        </p>
+      </div>
+
+      <!-- Card 3: Severity Classification -->
+      <div class="card" style="display: flex; flex-direction: column;">
+        <div style="width: 44px; height: 44px; background-color: var(--accent-blue-light); border: 1px solid var(--accent-blue-border); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; color: var(--accent-blue); margin-bottom: 1rem;">
+          ⚡
+        </div>
+        <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Severity Classification</h3>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">
+          Multi-tiered classification (Critical, High, Medium, Low) ensures rapid emergency dispatch to road hazards before vehicle damage occurs.
+        </p>
+      </div>
+
+      <!-- Card 4: Infrastructure Analytics -->
+      <div class="card" style="display: flex; flex-direction: column;">
+        <div style="width: 44px; height: 44px; background-color: var(--accent-blue-light); border: 1px solid var(--accent-blue-border); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; color: var(--accent-blue); margin-bottom: 1rem;">
+          📊
+        </div>
+        <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Infrastructure Analytics</h3>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">
+          Calculates real-time municipal health percentage, tracks 7-day incident trends, and produces SQLite-backed metrics.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Workflow Section -->
+  <section class="card" style="padding: 2.5rem; margin-bottom: 2rem;">
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <h2 style="margin-bottom: 0.5rem;">Municipal Defect Lifecycle</h2>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">From initial citizen reporting to public works resolution.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; position: relative;">
+      
+      <div style="text-align: center; padding: 1rem; border: 1px solid var(--border-light); border-radius: var(--radius-sm); background-color: var(--bg-subtle);">
+        <div style="font-weight: 800; color: var(--accent-blue); font-size: 1.1rem; margin-bottom: 4px;">1. Capture</div>
+        <div style="font-size: 0.8rem; color: var(--text-muted);">Citizens or cameras snap defect images.</div>
+      </div>
+
+      <div style="text-align: center; padding: 1rem; border: 1px solid var(--border-light); border-radius: var(--radius-sm); background-color: var(--bg-subtle);">
+        <div style="font-weight: 800; color: var(--accent-blue); font-size: 1.1rem; margin-bottom: 4px;">2. Detect</div>
+        <div style="font-size: 0.8rem; color: var(--text-muted);">AI scans imagery for road anomalies.</div>
+      </div>
+
+      <div style="text-align: center; padding: 1rem; border: 1px solid var(--border-light); border-radius: var(--radius-sm); background-color: var(--bg-subtle);">
+        <div style="font-weight: 800; color: var(--accent-blue); font-size: 1.1rem; margin-bottom: 4px;">3. Classify</div>
+        <div style="font-size: 0.8rem; color: var(--text-muted);">Categorizes potholes, cracks, or signs.</div>
+      </div>
+
+      <div style="text-align: center; padding: 1rem; border: 1px solid var(--border-light); border-radius: var(--radius-sm); background-color: var(--bg-subtle);">
+        <div style="font-weight: 800; color: var(--accent-blue); font-size: 1.1rem; margin-bottom: 4px;">4. Locate</div>
+        <div style="font-size: 0.8rem; color: var(--text-muted);">Tags precise GPS coordinate points.</div>
+      </div>
+
+      <div style="text-align: center; padding: 1rem; border: 1px solid var(--border-light); border-radius: var(--radius-sm); background-color: var(--bg-subtle);">
+        <div style="font-weight: 800; color: var(--accent-blue); font-size: 1.1rem; margin-bottom: 4px;">5. Prioritize</div>
+        <div style="font-size: 0.8rem; color: var(--text-muted);">Calculates safety severity ranking.</div>
+      </div>
+
+      <div style="text-align: center; padding: 1rem; border: 1px solid var(--border-light); border-radius: var(--radius-sm); background-color: var(--bg-subtle);">
+        <div style="font-weight: 800; color: var(--accent-blue); font-size: 1.1rem; margin-bottom: 4px;">6. Track</div>
+        <div style="font-size: 0.8rem; color: var(--text-muted);">Inspectors verify and log resolution.</div>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+{% endblock %}

@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}CIVICEYE AI - Report Civic Infrastructure Defect{% endblock %}
+
+{% block content %}
+<div class="app-container" style="max-width: 860px;">
+
+  <!-- Header -->
+  <div style="margin-bottom: 2rem; text-align: center;">
+    <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-blue); text-transform: uppercase; letter-spacing: 0.04em;">
+      CITIZEN & INSPECTOR REPORTING PORTAL
+    </div>
+    <h1 style="font-size: 2rem; margin-top: 0.25rem;">Report an Infrastructure Issue</h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem; max-width: 600px; margin: 0 auto;">
+      Submit road hazards, potholes, or damaged traffic assets directly to the municipal maintenance queue.
+    </p>
+  </div>
+
+  <!-- Main Report Form Card -->
+  <div id="report-form-card" class="card">
+    <form id="report-form" enctype="multipart/form-data">
+
+      <!-- Issue Type Selection -->
+      <div class="form-group">
+        <label for="issue-type-select" class="form-label">
+          Issue Type <span style="color: #dc2626;">*</span>
+        </label>
+        <select id="issue-type-select" name="issue_type" class="form-control" required>
+          <option value="" disabled selected>Select the defect type...</option>
+          <option value="Pothole">Pothole</option>
+          <option value="Road Crack">Road Crack</option>
+          <option value="Damaged Signal">Damaged Signal</option>
+          <option value="Damaged Sign">Damaged Sign</option>
+          <option value="Broken Streetlight">Broken Streetlight</option>
+          <option value="Other">Other</option>
+        </select>
+        <div class="form-help">
+          The AI Auditor will analyze submitted imagery to calibrate defect severity.
+        </div>
+      </div>
+
+      <!-- Location / Street Address -->
+      <div class="form-group">
+        <label for="location-input" class="form-label">
+          Street Address / Landmark <span style="color: #dc2626;">*</span>
+        </label>
+        <input 
+          type="text" 
+          id="location-input" 
+          name="location" 
+          class="form-control" 
+          placeholder="e.g. 4th Street & Market Blvd, near Metro Station"
+          required
+        >
+      </div>
+
+      <!-- GPS Coordinates Row with "Use My Location" -->
+      <div class="form-group">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+          <label class="form-label" style="margin-bottom: 0;">GPS Location Coordinates</label>
+          <button type="button" id="btn-use-location" class="btn btn-outline btn-sm">
+            📍 Use My Location
+          </button>
+        </div>
+        
+        <div class="form-row">
+          <div>
+            <input 
+              type="text" 
+              id="latitude-input" 
+              name="latitude" 
+              class="form-control" 
+              placeholder="Latitude (e.g. 37.7858)"
+            >
+          </div>
+          <div>
+            <input 
+              type="text" 
+              id="longitude-input" 
+              name="longitude" 
+              class="form-control" 
+              placeholder="Longitude (e.g. -122.4065)"
+            >
+          </div>
+        </div>
+        <div class="form-help">
+          Browser geolocation automatically places an interactive pin on the spatial audit map.
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="form-group">
+        <label for="description-input" class="form-label">
+          Detailed Description / Impact
+        </label>
+        <textarea 
+          id="description-input" 
+          name="description" 
+          class="form-control" 
+          rows="3" 
+          placeholder="Describe the severity, lane obstruction, or imminent risk to vehicles/pedestrians..."
+        ></textarea>
+      </div>
+
+      <!-- Image Upload Dropzone -->
+      <div class="form-group">
+        <label class="form-label">Defect Image Upload</label>
+        
+        <div id="image-dropzone" class="file-dropzone">
+          <input type="file" id="image-upload-input" name="image" accept="image/*">
+          <div style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--accent-blue);">📷</div>
+          <div style="font-weight: 600; color: var(--text-primary); font-size: 0.95rem;">
+            Click to select or drag and drop photo
+          </div>
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+            Supports PNG, JPG, JPEG, WEBP (Saved to <code>static/uploads/</code>)
+          </div>
+        </div>
+
+        <!-- Image Preview Container -->
+        <div id="preview-container" style="display: none; margin-top: 1rem; text-align: center;">
+          <img id="image-preview" src="" alt="Defect preview" class="dropzone-preview">
+          <div style="margin-top: 6px;">
+            <button type="button" id="btn-remove-image" class="btn btn-sm btn-danger">
+              Remove Image
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-light); display: flex; justify-content: flex-end; gap: 0.75rem;">
+        <a href="/dashboard" class="btn btn-outline">
+          Cancel
+        </a>
+        <button type="submit" id="submit-issue-btn" class="btn btn-primary btn-lg">
+          Submit Issue Report
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Submission Success Card (Initially Hidden) -->
+  <div id="submission-success-card" class="card" style="display: none; text-align: center; padding: 3rem 2rem;">
+    <div style="width: 56px; height: 56px; background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; color: #16a34a; margin: 0 auto 1.25rem auto;">
+      ✓
+    </div>
+
+    <div style="font-size: 0.85rem; font-weight: 700; color: #15803d; text-transform: uppercase;">
+      REPORT CONFIRMED & SAVED IN SQLITE
+    </div>
+
+    <h2 style="margin: 0.5rem 0;">Issue Successfully Registered</h2>
+
+    <div style="background-color: var(--accent-blue-light); border: 1px solid var(--accent-blue-border); border-radius: var(--radius-sm); padding: 1.25rem; max-width: 380px; margin: 1.5rem auto;">
+      <div style="font-size: 0.8rem; color: var(--accent-blue); font-weight: 700;">ASSIGNED MUNICIPAL TRACKING ID</div>
+      <div id="generated-issue-id" style="font-size: 2.25rem; font-weight: 900; color: var(--accent-blue); letter-spacing: -0.01em;">
+        --
+      </div>
+      <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">
+        Use this ID to track remediation status.
+      </div>
+    </div>
+
+    <!-- AI Verification Details Container -->
+    <div id="ai-verification-details" style="max-width: 500px; margin: 0 auto 1.5rem auto; text-align: left;"></div>
+
+    <div style="display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap;">
+      <a id="btn-success-view-map" href="/map" class="btn btn-outline">
+        View on Map
+      </a>
+      <a id="btn-success-view-table" href="/issues" class="btn btn-outline">
+        View in Issues Table
+      </a>
+      <button id="btn-report-another" class="btn btn-primary">
+        Report Another Issue
+      </button>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/report.js"></script>
+{% endblock %}

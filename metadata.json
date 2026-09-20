@@ -1,0 +1,6 @@
+{
+  "name": "CIVICEYE AI",
+  "description": "Smart Road & Infrastructure Auditor - AI-powered civic infrastructure monitoring to detect, locate, verify, prioritize, and track road defects.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

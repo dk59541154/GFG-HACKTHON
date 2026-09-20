@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="100%" height="100%">
+  <rect width="600" height="400" fill="#0f172a" />
+  <!-- Streetlight mast -->
+  <path d="M 180 400 L 180 120 Q 180 60 260 60 L 320 60" stroke="#475569" stroke-width="14" fill="none" stroke-linecap="round" />
+  <!-- Luminaire fixture -->
+  <path d="M 310 50 L 370 60 L 360 85 L 305 80 Z" fill="#64748b" />
+  <!-- Glass lens with flicker crack -->
+  <ellipse cx="335" cy="85" rx="30" ry="10" fill="#fef08a" opacity="0.6" />
+  <path d="M 320 85 L 335 88 L 345 82" stroke="#ef4444" stroke-width="2" />
+  <!-- Ground glow -->
+  <ellipse cx="335" cy="380" rx="90" ry="18" fill="#fef08a" opacity="0.1" />
+  <!-- AI Detection Overlay Box -->
+  <rect x="280" y="30" width="120" height="80" fill="none" stroke="#3b82f6" stroke-width="2" stroke-dasharray="6 4" rx="6" />
+  <rect x="260" y="8" width="160" height="22" fill="#3b82f6" rx="4" />
+  <text x="270" y="23" fill="#ffffff" font-family="system-ui, sans-serif" font-size="11" font-weight="700">STREETLIGHT • LOW 85%</text>
+</svg>

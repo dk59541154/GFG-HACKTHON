@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}CIVICEYE AI - Municipal Inspector Authentication{% endblock %}
+
+{% block content %}
+<div class="app-container" style="max-width: 480px;">
+
+  <div style="text-align: center; margin-bottom: 2rem;">
+    <div class="brand-icon" style="margin: 0 auto 1rem auto; width: 3.25rem; height: 3.25rem; font-size: 1.5rem;">
+      🛡️
+    </div>
+    <h1 style="font-size: 1.75rem;">Inspector Portal</h1>
+    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">
+      Authorized municipal personnel and road auditors.
+    </p>
+  </div>
+
+  <div class="card">
+    
+    <!-- Demo Credentials Notice -->
+    <div style="background-color: var(--bg-subtle); border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 0.85rem; margin-bottom: 1.5rem; font-size: 0.85rem;">
+      <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">
+        🔑 Demonstration Credentials:
+      </div>
+      <div style="color: var(--text-secondary); font-family: monospace;">
+        Email: <strong>admin@civiceye.gov</strong><br>
+        Password: <strong>admin123</strong>
+      </div>
+    </div>
+
+    <!-- Error Alert Container -->
+    <div id="login-error-alert" class="alert alert-error" style="display: none;"></div>
+
+    <!-- Login Form -->
+    <form id="admin-login-form">
+      <div class="form-group">
+        <label for="admin-email" class="form-label">Municipal Email</label>
+        <input 
+          type="email" 
+          id="admin-email" 
+          class="form-control" 
+          value="admin@civiceye.gov"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="admin-password" class="form-label">Password</label>
+        <input 
+          type="password" 
+          id="admin-password" 
+          class="form-control" 
+          value="admin123"
+          required
+        >
+      </div>
+
+      <div style="margin-top: 1.75rem;">
+        <button type="submit" id="btn-login-submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem;">
+          Authenticate Inspector
+        </button>
+      </div>
+    </form>
+
+  </div>
+
+  <div style="text-align: center; margin-top: 1.5rem; font-size: 0.8rem; color: var(--text-muted);">
+    Passwords are hashed using SHA-256 and authenticated via Flask session management.
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const loginForm = document.getElementById("admin-login-form");
+  const errorAlert = document.getElementById("login-error-alert");
+  const submitBtn = document.getElementById("btn-login-submit");
+
+  if (loginForm) {
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (errorAlert) errorAlert.style.display = "none";
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Verifying...";
+
+      const email = document.getElementById("admin-email").value.trim();
+      const password = document.getElementById("admin-password").value;
+
+      try {
+        const res = await fetch("/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || "Authentication failed");
+        }
+
+        window.CivicEye.notify(data.message || "Logged in successfully.", "success");
+        setTimeout(() => {
+          window.location.href = "/dashboard";
+        }, 600);
+
+      } catch (err) {
+        if (errorAlert) {
+          errorAlert.textContent = err.message;
+          errorAlert.style.display = "block";
+        }
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Authenticate Inspector";
+      }
+    });
+  }
+});
+</script>
+{% endblock %}

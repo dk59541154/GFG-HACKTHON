@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="100%" height="100%">
+  <rect width="600" height="400" fill="#1e293b" />
+  <!-- Mast arm pole -->
+  <rect x="270" y="0" width="24" height="400" fill="#64748b" />
+  <rect x="180" y="110" width="220" height="18" fill="#64748b" />
+  <!-- Twisted traffic signal housing -->
+  <g transform="translate(230, 80) rotate(26, 60, 110)">
+    <rect x="20" y="20" width="80" height="190" rx="14" fill="#0f172a" stroke="#475569" stroke-width="4" />
+    <!-- Hood visors -->
+    <path d="M 18 35 Q 60 10 102 35" stroke="#334155" stroke-width="8" fill="none" />
+    <circle cx="60" cy="55" r="22" fill="#ef4444" opacity="0.9" filter="drop-shadow(0 0 8px #ef4444)" />
+    <circle cx="60" cy="115" r="22" fill="#334155" opacity="0.6" />
+    <circle cx="60" cy="175" r="22" fill="#334155" opacity="0.6" />
+  </g>
+  <!-- AI Detection Overlay Box -->
+  <rect x="190" y="60" width="200" height="230" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="6 4" rx="6" />
+  <rect x="190" y="32" width="220" height="26" fill="#ef4444" rx="4" />
+  <text x="200" y="50" fill="#ffffff" font-family="system-ui, sans-serif" font-size="13" font-weight="700">DAMAGED SIGNAL • CRITICAL 96%</text>
+</svg>

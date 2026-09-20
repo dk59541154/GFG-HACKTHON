@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block title %}CIVICEYE AI - Municipal Infrastructure Dashboard{% endblock %}
+
+{% block content %}
+<div class="app-container">
+
+  <!-- Header & Toolbar -->
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.75rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-blue); text-transform: uppercase; letter-spacing: 0.04em;">
+        REAL-TIME SQLITE MONITOR
+      </div>
+      <h1 style="font-size: 1.85rem; margin-top: 0.2rem;">Infrastructure Dashboard</h1>
+      <p style="color: var(--text-muted); font-size: 0.9rem;">
+        Live municipal defect intelligence streamed via Flask REST API.
+      </p>
+    </div>
+
+    <!-- Actions: Report, Reset Demo, Clear Demo -->
+    <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
+      <a href="/report" class="btn btn-primary btn-sm">
+        + Report Issue
+      </a>
+      <button id="reset-demo-btn" class="btn btn-outline btn-sm" title="Reload sample municipal records">
+        Reload Demo Data
+      </button>
+      <button id="clear-demo-btn" class="btn btn-outline btn-sm" style="color:var(--text-muted);" title="Empty table for zero-defect testing">
+        Clear All
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State Indicator -->
+  <div id="dashboard-loading" style="display: none; padding: 0.5rem 0; font-size: 0.85rem; color: var(--text-muted);">
+    Refreshing metrics from database...
+  </div>
+
+  <!-- 4 Dynamic Metric Cards (Updated by dashboard.js from /api/dashboard) -->
+  <div class="metrics-grid">
+    
+    <div class="metric-card">
+      <div class="metric-header">
+        <span class="metric-label">Total Issues</span>
+        <span style="font-size:1.1rem;">📋</span>
+      </div>
+      <div id="stat-total" class="metric-value">--</div>
+      <div class="metric-footer">Logged in municipal database</div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-header">
+        <span class="metric-label">Critical Issues</span>
+        <span style="font-size:1.1rem;">🚨</span>
+      </div>
+      <div id="stat-critical" class="metric-value" style="color: var(--critical-text);">--</div>
+      <div class="metric-footer">Unresolved high-hazard defects</div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-header">
+        <span class="metric-label">In Progress</span>
+        <span style="font-size:1.1rem;">🛠️</span>
+      </div>
+      <div id="stat-inprogress" class="metric-value" style="color: var(--high-text);">--</div>
+      <div class="metric-footer">Active municipal repairs</div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-header">
+        <span class="metric-label">Resolved</span>
+        <span style="font-size:1.1rem;">✅</span>
+      </div>
+      <div id="stat-resolved" class="metric-value" style="color: #15803d;">--</div>
+      <div class="metric-footer">Completed remediations</div>
+    </div>
+
+  </div>
+
+  <!-- Infrastructure Health Section (Clean progress bar, no fake circular gauge) -->
+  <div class="card" style="margin-bottom: 2rem;">
+    <div class="card-header">
+      <div>
+        <h2 class="card-title">Infrastructure Health Index</h2>
+        <div class="card-subtitle">
+          Calculated dynamically: <code>Health % = 100 - % unresolved critical/high issues</code>
+        </div>
+      </div>
+      <div id="health-status-badge" class="badge badge-status-resolved">
+        Calculating...
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: baseline; gap: 1rem; margin-bottom: 0.5rem;">
+      <span id="health-percentage" style="font-size: 2.5rem; font-weight: 800; color: var(--text-primary); line-height: 1;">
+        --%
+      </span>
+      <span style="font-size: 0.95rem; color: var(--text-secondary); font-weight: 600;">
+        Overall Municipal Network Integrity
+      </span>
+    </div>
+
+    <!-- Health Progress Bar -->
+    <div class="health-container">
+      <div class="health-bar-track">
+        <div id="health-bar-fill" class="health-bar-fill" style="width: 0%;"></div>
+      </div>
+      <div class="health-details">
+        <span id="health-explanation">Assessing municipal records...</span>
+        <span>Target Threshold: &ge; 80% Healthy</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detection Trend & Defect Breakdown Grid -->
+  <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 2rem;" class="trend-grid-responsive">
+    
+    <!-- Issue Detection Trend (Last 7 Days) -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Issue Detection Trend</h3>
+          <div class="card-subtitle">Recorded defects over the last 7 days</div>
+        </div>
+        <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">DAILY ACTIVITY</span>
+      </div>
+      
+      <div id="trend-chart" class="trend-chart-container">
+        <!-- Generated by dashboard.js -->
+        <p style="margin: auto; color: var(--text-muted); font-size: 0.85rem;">Rendering 7-day trend...</p>
+      </div>
+    </div>
+
+    <!-- Issue Category Breakdown -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title">Asset Distribution</h3>
+          <div class="card-subtitle">Defects by infrastructure type</div>
+        </div>
+      </div>
+      
+      <div id="type-breakdown-container">
+        <p style="color: var(--text-muted); font-size: 0.85rem;">Loading categories...</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Recent Issues Section -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <h3 class="card-title">Recent Issues</h3>
+        <div class="card-subtitle">Latest records synchronized from SQLite database</div>
+      </div>
+      <a href="/issues" class="btn btn-outline btn-sm">
+        View All Issues →
+      </a>
+    </div>
+
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Issue ID</th>
+            <th>Issue Type</th>
+            <th>Location</th>
+            <th>Severity</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="recent-issues-body">
+          <tr>
+            <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+              Connecting to Flask API...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/dashboard.js"></script>
+{% endblock %}

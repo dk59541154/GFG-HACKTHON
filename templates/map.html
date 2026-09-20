@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}CIVICEYE AI - Spatial Defect Map{% endblock %}
+
+{% block extra_head %}
+<!-- Leaflet Map CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<style>
+  #civic-map {
+    width: 100%;
+    height: 600px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-light);
+    z-index: 10;
+  }
+  .map-layout-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 1.5rem;
+  }
+  @media (max-width: 900px) {
+    .map-layout-grid {
+      grid-template-columns: 1fr;
+    }
+    #civic-map {
+      height: 420px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="app-container">
+
+  <!-- Header -->
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-blue); text-transform: uppercase; letter-spacing: 0.04em;">
+        GPS SPATIAL AUDITOR
+      </div>
+      <h1 style="font-size: 1.85rem; margin-top: 0.2rem;">Infrastructure Defect Map</h1>
+      <p style="color: var(--text-muted); font-size: 0.9rem;">
+        Geospatial distribution of reported road and infrastructure defects stored in SQLite.
+      </p>
+    </div>
+
+    <!-- Map Legend -->
+    <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+      <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">SEVERITY:</span>
+      <span class="badge badge-critical">Critical</span>
+      <span class="badge badge-high">High</span>
+      <span class="badge badge-medium">Medium</span>
+      <span class="badge badge-low">Low</span>
+    </div>
+  </div>
+
+  <!-- Map Layout Grid -->
+  <div class="map-layout-grid">
+    
+    <!-- Map Canvas Container -->
+    <div style="position: relative;">
+      <div id="civic-map"></div>
+    </div>
+
+    <!-- Mapped Issues Sidebar -->
+    <div class="card" style="padding: 0; display: flex; flex-direction: column; max-height: 600px;">
+      <div style="padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-light); background-color: var(--bg-subtle);">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="font-size: 1rem;">Geocoded Issues</h3>
+          <span id="map-count-badge" class="badge badge-low" style="font-size: 0.75rem;">
+            Loading...
+          </span>
+        </div>
+        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">
+          Click any issue to pan directly to its coordinates.
+        </div>
+      </div>
+
+      <!-- Scrollable List of Issues -->
+      <div id="map-issue-list" style="overflow-y: auto; flex: 1;">
+        <p style="padding: 1rem; color: var(--text-muted); font-size: 0.85rem;">
+          Loading spatial registry...
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Leaflet Map JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="/static/js/map.js"></script>
+{% endblock %}

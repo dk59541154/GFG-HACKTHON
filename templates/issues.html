@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}CIVICEYE AI - Infrastructure Defect Registry{% endblock %}
+
+{% block content %}
+<div class="app-container">
+
+  <!-- Header -->
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-blue); text-transform: uppercase; letter-spacing: 0.04em;">
+        MUNICIPAL REGISTRY
+      </div>
+      <h1 style="font-size: 1.85rem; margin-top: 0.2rem;">Infrastructure Issues</h1>
+      <p style="color: var(--text-muted); font-size: 0.9rem;">
+        Search, inspect, and update defect statuses across public roads and utilities.
+      </p>
+    </div>
+
+    <div style="display: flex; gap: 0.5rem; align-items: center;">
+      <span id="results-count-badge" class="badge badge-low" style="font-size: 0.8rem; padding: 4px 10px;">
+        Loading records...
+      </span>
+      <a href="/report" class="btn btn-primary btn-sm">
+        + Report Issue
+      </a>
+    </div>
+  </div>
+
+  <!-- Search & Filter Controls -->
+  <div class="filter-bar">
+    
+    <!-- Search Input -->
+    <div class="filter-search">
+      <input 
+        type="text" 
+        id="issue-search" 
+        class="form-control" 
+        placeholder="Search by ID, location, or description..."
+      >
+    </div>
+
+    <!-- Severity Filter -->
+    <div>
+      <select id="filter-severity" class="form-control" style="min-width: 140px;">
+        <option value="all">Severity: All</option>
+        <option value="Critical">Critical</option>
+        <option value="High">High</option>
+        <option value="Medium">Medium</option>
+        <option value="Low">Low</option>
+      </select>
+    </div>
+
+    <!-- Status Filter -->
+    <div>
+      <select id="filter-status" class="form-control" style="min-width: 140px;">
+        <option value="all">Status: All</option>
+        <option value="Reported">Reported</option>
+        <option value="Verified">Verified</option>
+        <option value="In Progress">In Progress</option>
+        <option value="Resolved">Resolved</option>
+      </select>
+    </div>
+
+    <!-- Issue Type Filter -->
+    <div>
+      <select id="filter-type" class="form-control" style="min-width: 160px;">
+        <option value="all">Type: All</option>
+        <option value="Pothole">Pothole</option>
+        <option value="Road Crack">Road Crack</option>
+        <option value="Damaged Signal">Damaged Signal</option>
+        <option value="Damaged Sign">Damaged Sign</option>
+        <option value="Broken Streetlight">Broken Streetlight</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+
+    <!-- Clear Filters -->
+    <div>
+      <button id="btn-clear-filters" class="btn btn-outline" style="padding: 0.65rem 0.9rem;">
+        Reset Filters
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Issues Table -->
+  <div class="table-responsive" style="margin-bottom: 2rem;">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Issue ID</th>
+          <th>Issue Type</th>
+          <th>Location</th>
+          <th>Severity</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="issues-table-body">
+        <tr>
+          <td colspan="7" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
+            Fetching issues from SQLite database...
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- Issue Detail & Admin Update Modal -->
+<div id="issue-modal" class="modal-overlay">
+  <div class="modal-card">
+    
+    <div class="modal-header">
+      <div>
+        <span id="modal-issue-id" style="font-size: 0.8rem; font-weight: 800; color: var(--accent-blue);"></span>
+        <h3 id="modal-issue-type" style="margin-top: 2px;"></h3>
+      </div>
+      <button class="modal-close-btn modal-close-trigger" aria-label="Close modal">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      
+      <!-- Defect Image -->
+      <div style="margin-bottom: 1.25rem; border-radius: var(--radius-sm); overflow: hidden; max-height: 240px; background-color: #0f172a; display:flex; justify-content:center; align-items:center;">
+        <img id="modal-image" src="" alt="Defect image" style="max-height: 240px; width: auto; object-fit: contain;">
+      </div>
+
+      <!-- Key Metadata Row -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; padding: 0.75rem; background-color: var(--bg-subtle); border-radius: var(--radius-sm); border: 1px solid var(--border-light);">
+        <div>
+          <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">SEVERITY</div>
+          <div id="modal-severity-badge" style="margin-top: 3px;"></div>
+        </div>
+        <div>
+          <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">STATUS</div>
+          <div id="modal-status-badge" style="margin-top: 3px;"></div>
+        </div>
+      </div>
+
+      <!-- Description & Location -->
+      <div class="form-group">
+        <label class="form-label">Location</label>
+        <p id="modal-location" style="font-size: 0.925rem; color: var(--text-primary); font-weight: 500;"></p>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">GPS Coordinates</label>
+        <div id="modal-coords"></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Citizen / Field Description</label>
+        <p id="modal-description" style="font-size: 0.9rem; background-color: var(--bg-subtle); padding: 0.75rem; border-radius: 4px; border: 1px solid var(--border-light);"></p>
+      </div>
+
+      <!-- AI Analysis Metrics -->
+      <div style="margin-bottom: 1.25rem; padding: 0.75rem; background-color: var(--accent-blue-light); border: 1px solid var(--accent-blue-border); border-radius: 4px;">
+        <div style="font-size: 0.75rem; font-weight: 700; color: var(--accent-blue); text-transform: uppercase;">
+          AI Visual Confidence
+        </div>
+        <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-blue);">
+          <span id="modal-ai-confidence">--</span>
+        </div>
+        <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px;">
+          Calculated via rule-based anomaly detector. Compatible with YOLOv8 inference weights.
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+        <span>Created: <strong id="modal-date"></strong></span>
+        <span>Last Updated: <strong id="modal-updated"></strong></span>
+      </div>
+
+      <!-- Admin Status & Severity Update Section -->
+      <div id="modal-admin-panel" style="padding-top: 1rem; border-top: 1px solid var(--border-light);">
+        <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem; color: var(--text-primary);">
+          🛡️ Municipal Inspector Actions
+        </h4>
+        <form id="admin-update-form">
+          <div class="form-row" style="margin-bottom: 0.75rem;">
+            <div>
+              <label class="form-label" style="font-size: 0.8rem;">Change Status</label>
+              <select id="admin-select-status" class="form-control" style="font-size: 0.85rem; padding: 0.45rem;">
+                <option value="Reported">Reported</option>
+                <option value="Verified">Verified</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Resolved">Resolved</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label" style="font-size: 0.8rem;">Change Severity</label>
+              <select id="admin-select-severity" class="form-control" style="font-size: 0.85rem; padding: 0.45rem;">
+                <option value="Critical">Critical</option>
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm" style="width: 100%;">
+            Save Status / Severity Update
+          </button>
+        </form>
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-outline btn-sm modal-close-trigger">Close</button>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/issues.js"></script>
+{% endblock %}

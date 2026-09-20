@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}CIVICEYE AI - Smart Road & Infrastructure Auditor{% endblock %}</title>
+  <meta name="description" content="AI-powered civic infrastructure monitoring that detects, locates, verifies, prioritizes and tracks road defects and civic issues.">
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="/static/css/style.css">
+
+  <!-- Leaflet CSS for Map page if needed -->
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+  <!-- Official Government / Municipal Status Bar -->
+  <div class="gov-top-bar">
+    <div class="app-container">
+      <div class="gov-badge">
+        <span>🏛️ Official Civic Infrastructure Monitoring Portal</span>
+      </div>
+      <div class="gov-status">
+        <span class="status-indicator-dot"></span>
+        <span>Operational • System Online</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Primary Site Navigation -->
+  <header class="site-header">
+    <div class="app-container">
+      <nav class="navbar">
+        <a href="/" class="brand-wrapper">
+          <div class="brand-icon">👁️</div>
+          <div class="brand-info">
+            <div class="brand-title">CIVICEYE <span>AI</span></div>
+            <div class="brand-subtitle">Smart Road & Infrastructure Auditor</div>
+          </div>
+        </a>
+
+        <ul class="nav-links">
+          <li class="nav-item {% if current_page == 'home' %}active{% endif %}">
+            <a href="/">Home</a>
+          </li>
+          <li class="nav-item {% if current_page == 'dashboard' %}active{% endif %}">
+            <a href="/dashboard">Dashboard</a>
+          </li>
+          <li class="nav-item {% if current_page == 'issues' %}active{% endif %}">
+            <a href="/issues">Issues</a>
+          </li>
+          <li class="nav-item {% if current_page == 'map' %}active{% endif %}">
+            <a href="/map">Map</a>
+          </li>
+          <li class="nav-item {% if current_page == 'report' %}active{% endif %}">
+            <a href="/report">Report Issue</a>
+          </li>
+        </ul>
+
+        <div class="nav-actions">
+          <div id="nav-auth-link">
+            <a href="/login" class="btn btn-sm btn-outline">Admin Login</a>
+          </div>
+          <button class="mobile-nav-toggle" aria-label="Toggle navigation menu">
+            ☰
+          </button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Page Content -->
+  <main class="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Municipal Footer -->
+  <footer class="site-footer">
+    <div class="app-container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <div class="footer-brand-title">CIVICEYE AI</div>
+          <p style="color:#94a3b8; font-size:0.85rem; line-height:1.5;">
+            Detect → Locate → Verify → Prioritize → Track. Real-time civic infrastructure auditor empowering cities to maintain safer, more resilient streets.
+          </p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-column">
+            <h4>Platform</h4>
+            <ul>
+              <li><a href="/dashboard">Analytics Dashboard</a></li>
+              <li><a href="/issues">Defect Registry</a></li>
+              <li><a href="/map">Spatial GPS Map</a></li>
+              <li><a href="/report">Report an Issue</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h4>Administration</h4>
+            <ul>
+              <li><a href="/login">Inspector Login</a></li>
+              <li><a href="/api/dashboard" target="_blank">Dashboard API (JSON)</a></li>
+              <li><a href="/api/issues" target="_blank">Issues API (JSON)</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 CIVICEYE AI Infrastructure Systems. Standard Municipal License.</span>
+        <span>SQLite + Python Flask + Vanilla JS</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Global Application Scripts -->
+  <script src="/static/js/app.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>
